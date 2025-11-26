@@ -77,9 +77,8 @@ dependencies:
   http: ^1.1.2
   shared_preferences: ^2.2.2
   image_picker: ^1.0.4
-  url_launcher: ^6.2.1
+  url_launcher: ^6.1.14
   permission_handler: ^11.0.1
-  # firebase_core: ^4.2.1
 
 
 
