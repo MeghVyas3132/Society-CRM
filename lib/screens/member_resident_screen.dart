@@ -1,0 +1,191 @@
+import 'package:flutter/material.dart';
+import '../utils/app_colors.dart';
+import '../services/database_service.dart';
+import '../models/user_model.dart';
+
+class MemberResidentScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [AppColors.primaryBlue, AppColors.lightBlue],
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                leading: IconButton(
+                  icon: Icon(Icons.arrow_back, color: AppColors.white),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                title: Text(
+                  'Member & Resident',
+                  style: TextStyle(color: AppColors.white),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  margin: EdgeInsets.only(top: 20),
+                  padding: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Member :',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primaryBlue,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Expanded(
+                        child: StreamBuilder<List<User>>(
+                          stream: DatabaseService.instance.usersStream(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            }
+
+                            if (snapshot.hasError) {
+                              return Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.error_outline, size: 48, color: Colors.red),
+                                    SizedBox(height: 16),
+                                    Text('Error loading members'),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      snapshot.error.toString(),
+                                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+
+                            final members = snapshot.data ?? [];
+
+                            if (members.isEmpty) {
+                              return Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.people_outline,
+                                      size: 64,
+                                      color: Colors.grey[400],
+                                    ),
+                                    SizedBox(height: 16),
+                                    Text(
+                                      'No members yet',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'Members will appear here when they register',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey[400],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+
+                            return ListView.separated(
+                              itemCount: members.length,
+                              separatorBuilder: (context, index) => SizedBox(height: 20),
+                              itemBuilder: (context, index) {
+                                final member = members[index];
+                                return _buildMemberCard(
+                                  member.username,
+                                  member.buildingFloor.isNotEmpty ? member.buildingFloor : 'N/A',
+                                  member.buildingNumber,
+                                  member.mobileNumber.isNotEmpty ? member.formattedMobileNumber : 'N/A',
+                                  member.email,
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMemberCard(
+      String name, String flatNo, String building, String mobile, String email) {
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.primaryBlue, width: 2),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildMemberRow('Member Name :', name),
+          _buildMemberRow('Flat No :', flatNo),
+          _buildMemberRow('Building No :', building),
+          _buildMemberRow('Mobile No :', mobile),
+          _buildMemberRow('Email :', email),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMemberRow(String label, String value) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(fontSize: 14),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

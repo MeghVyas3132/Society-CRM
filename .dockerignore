@@ -1,0 +1,50 @@
+# Dependencies
+.dart_tool/
+.packages
+.pub/
+build/
+pubspec.lock
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# macOS
+.DS_Store
+*.swp
+
+# Android
+android/.gradle/
+android/app/debug/
+android/app/profile/
+android/app/release/
+android/local.properties
+android/.cxx/
+
+# iOS
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework/
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Flutter/app.flx
+ios/Flutter/app.zip
+ios/Flutter/engine/
+ios/Flutter/flutter_assets/
+ios/ServiceDefinitions.json
+
+# Web
+web/.dart_tool/
+
+# Test
+coverage/
+
+# Misc
+*.log
+*.pyc
+*.class
+
+# Git
+.git/
+.gitignore
