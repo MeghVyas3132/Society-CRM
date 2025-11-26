@@ -66,12 +66,12 @@ dependencies:
   path: ^1.8.3
   get: ^4.6.5
   intl: ^0.18.1
-  # Firebase packages (compatible versions)
-  firebase_core: ^3.8.1
-  cloud_firestore: ^5.6.0
-  firebase_auth: ^5.3.4
-  firebase_storage: ^12.4.0
-  firebase_messaging: ^15.1.6
+  # Firebase packages (compatible versions for Dart 3.0.0)
+  firebase_core: ^2.24.0
+  cloud_firestore: ^4.14.0
+  firebase_auth: ^4.16.0
+  firebase_storage: ^11.6.0
+  firebase_messaging: ^14.6.0
   
   # Additional Dependencies for MySociety App
   http: ^1.1.0
