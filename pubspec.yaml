@@ -74,11 +74,11 @@ dependencies:
   firebase_messaging: ^15.1.6
   
   # Additional Dependencies for MySociety App
-  http: ^1.1.2
+  http: ^1.1.0
   shared_preferences: ^2.2.2
-  image_picker: ^1.0.4
+  image_picker: ^0.8.9
   url_launcher: ^6.1.14
-  permission_handler: ^11.0.1
+  permission_handler: ^11.0.0
 
 
 
