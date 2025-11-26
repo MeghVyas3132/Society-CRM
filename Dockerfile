@@ -1,6 +1,14 @@
 # Stage 1: Build Flutter Web App
 FROM debian:bookworm-slim AS builder
 
+# Accept build arguments for Firebase credentials
+ARG FIREBASE_API_KEY
+ARG FIREBASE_APP_ID
+ARG FIREBASE_MESSAGING_SENDER_ID
+ARG FIREBASE_PROJECT_ID
+ARG FIREBASE_STORAGE_BUCKET
+ARG FIREBASE_AUTH_DOMAIN
+
 # Install required dependencies
 RUN apt-get update && apt-get install -y \
     curl \
@@ -38,6 +46,43 @@ RUN flutter pub get
 
 # Copy the rest of the application
 COPY . .
+
+# Create firebase_options.dart with build args
+RUN mkdir -p lib && cat > lib/firebase_options.dart << 'DART_EOF'
+import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
+
+class DefaultFirebaseOptions {
+  static FirebaseOptions get currentPlatform {
+    return web;
+  }
+
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'ARG_FIREBASE_API_KEY',
+    appId: 'ARG_FIREBASE_APP_ID',
+    messagingSenderId: 'ARG_FIREBASE_MESSAGING_SENDER_ID',
+    projectId: 'ARG_FIREBASE_PROJECT_ID',
+    storageBucket: 'ARG_FIREBASE_STORAGE_BUCKET',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'ARG_FIREBASE_API_KEY',
+    appId: 'ARG_FIREBASE_APP_ID',
+    messagingSenderId: 'ARG_FIREBASE_MESSAGING_SENDER_ID',
+    projectId: 'ARG_FIREBASE_PROJECT_ID',
+    storageBucket: 'ARG_FIREBASE_STORAGE_BUCKET',
+    iosBundleId: 'com.example.societyCrm',
+  );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'ARG_FIREBASE_API_KEY',
+    appId: 'ARG_FIREBASE_APP_ID',
+    messagingSenderId: 'ARG_FIREBASE_MESSAGING_SENDER_ID',
+    projectId: 'ARG_FIREBASE_PROJECT_ID',
+    storageBucket: 'ARG_FIREBASE_STORAGE_BUCKET',
+    authDomain: 'ARG_FIREBASE_AUTH_DOMAIN',
+  );
+}
+DART_EOF
 
 # Build the web app
 RUN flutter build web --release
