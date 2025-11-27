@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  # Flutter Web App
+  mysociety-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mysociety-app
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Development container with Flutter SDK (optional - for development)
+  mysociety-dev:
+    image: ghcr.io/cirruslabs/flutter:stable
+    container_name: mysociety-dev
+    working_dir: /app
+    volumes:
+      - .:/app
+      - flutter-pub-cache:/root/.pub-cache
+    ports:
+      - "3000:3000"
+    command: flutter pub get
+    profiles:
+      - dev
+
+volumes:
+  flutter-pub-cache:
